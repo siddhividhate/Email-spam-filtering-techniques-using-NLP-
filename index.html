@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Spam Classification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        #container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+            width: 80%;
+            height: 60%;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        textarea {
+            height: 100px;
+        }
+
+        button {
+            background-color: #4caf50;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #spinner {
+            display: none;
+            margin-top: 10px;
+        }
+
+        #spinner img {
+            width: 40px;
+        }
+
+        #progress-bar {
+            margin-top: 10px;
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+        }
+
+        #progress-bar-inner {
+            height: 20px;
+            border-radius: 4px;
+            text-align: center;
+            line-height: 20px;
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <h2>Email Spam Classification</h2>
+        <label for="subject">Subject:</label>
+        <input type="text" id="subject" placeholder="Enter subject">
+
+        <label for="message">Message:</label>
+        <textarea id="message" placeholder="Enter message"></textarea>
+
+        
+        <button onclick="classifyEmail()">Classify Email</button>
+
+        <div id="spinner">
+            <img src="settings.gif" alt="Loading...">
+        </div>
+
+        <div id="progress-bar">
+            <div id="progress-bar-inner"></div>
+        </div>
+
+        <div id="result-container" style="margin-top: 20px; display: none;">
+            <h3>Classification Result:</h3>
+            <p id="output"></p>
+            <p id="spamWords"></p>
+            <p id="level"></p>
+        </div>
+    </div>
+
+    <script>
+        function showSpinner() {
+            document.getElementById('spinner').style.display = 'block';
+        }
+
+        function hideSpinner() {
+            document.getElementById('spinner').style.display = 'none';
+        }
+
+        function classifyEmail() {
+            showSpinner();
+
+            const subject = document.getElementById('subject').value;
+            const message = document.getElementById('message').value;
+ 
+            // Assuming you are using Fetch API to make the POST request
+            fetch(`http://localhost:8000/Predict?text=${message}&subject=${subject}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Handle the response data as needed
+                    console.log(data);
+                    showProgressBar()
+                    updateProgressBar(data.accuracy)
+                    showResult(data)
+
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                })
+                .finally(() => {
+                    hideSpinner();
+                });
+        }
+
+
+
+        function showProgressBar() {
+            document.getElementById('progress-bar').style.display = 'block';
+        }
+
+        function hideProgressBar() {
+            document.getElementById('progress-bar').style.display = 'none';
+        }
+
+        function updateProgressBar(percentage) {
+            const progressBarInner = document.getElementById('progress-bar-inner');
+            progressBarInner.style.width = `${percentage}%`;
+            if(percentage > 50)
+                progressBarInner.style.color = 'green';
+            if(percentage < 50)
+                progressBarInner.style.color = 'red';
+            progressBarInner.innerHTML = `Accuracy : ${percentage.toFixed(2)}%`;
+        }
+        function showResult(result) {
+            document.getElementById('result-container').style.display = 'block';
+            document.getElementById('output').innerText = `Output: ${result.output}`;
+            document.getElementById('spamWords').innerText = `Spam Words : ${result.spamWords}`;
+            document.getElementById('level').innerText = `Level: ${result.level}`;
+            //document.getElementById('accuracy').innerText = `Accuracy: ${result.accuracy}%`;
+      }
+    </script>
+</body>
+
+</html>

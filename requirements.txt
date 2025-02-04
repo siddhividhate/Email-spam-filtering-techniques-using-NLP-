@@ -1,0 +1,12 @@
+numpy
+huggingface_hub
+pandas
+matplotlib
+wordcloud
+nltk
+seaborn
+xgboost
+scikit-learn
+joblib
+fastapi
+uvicorn

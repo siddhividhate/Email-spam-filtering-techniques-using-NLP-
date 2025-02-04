@@ -1,0 +1,29 @@
+Steps 
+
+python3.9 -m venv .venv               - to create Viertual env 
+
+ .\.venv\Scripts\activate          - to activate the virtaul emnv 
+
+ cd src       - to select the directoryyy 
+
+ pip install -r .\requirements.txt
+
+
+ pip install modulename
+
+
+
+
+
+ emailSpam         vs code 
+
+
+pip install huggingface_hub
+
+
+virtual env.
+cd src
+python myapp.py
+
+ 
+
